@@ -1,0 +1,20 @@
+{
+  "name": "pixi-dust",
+  "version": "0.0.1",
+  "description": "A collection of PixiJS objects that provide reusable visual effects.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Noel Rivas",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@tweenjs/tween.js": "^18.6.4",
+    "browser-sync": "^2.27.11",
+    "browser-sync-webpack-plugin": "^2.3.0",
+    "pixi.js": "^7.1.2"
+  },
+  "devDependencies": {
+    "laravel-mix": "^6.0.49"
+  }
+}

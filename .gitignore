@@ -1,0 +1,4 @@
+.DS_Storage
+*.swp
+*.swo
+node_modules
