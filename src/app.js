@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
 const TWEEN = require('@tweenjs/tween.js');
-import { BlackSquare } from './sima/black-square.js';
+import { SimpleSquare } from './nodep/simple-square.js';
 import { ColorSplit1 } from './sima/color-split1.js';
 
 const classes = { 
-  BlackSquare,
+  SimpleSquare,
   ColorSplit1
 };
 
@@ -64,10 +64,12 @@ function loadDemo(name) {
   }
 
   const DemoClass = classes[name];
-  console.log(DemoClass);
   app.currentDemo = DemoClass.test(); 
   const demoContainer = app.currentDemo.container;
   app.stage.addChild(demoContainer);
+
+  // Add the demo ticker() function to the ticker
+  app.ticker.add(app.currentDemo.getTickFunction());
 
   // Center the new member of the family
   const demoBounds = demoContainer.getBounds();

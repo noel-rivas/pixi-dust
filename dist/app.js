@@ -833,19 +833,21 @@ var exports = {
 
 /***/ }),
 
-/***/ "./src/sima/black-square.js":
-/*!**********************************!*\
-  !*** ./src/sima/black-square.js ***!
-  \**********************************/
+/***/ "./src/nodep/simple-square.js":
+/*!************************************!*\
+  !*** ./src/nodep/simple-square.js ***!
+  \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BlackSquare": () => (/* binding */ BlackSquare)
+/* harmony export */   "SimpleSquare": () => (/* binding */ SimpleSquare)
 /* harmony export */ });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/index.mjs");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -853,29 +855,40 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
-var BlackSquare = /*#__PURE__*/function () {
-  function BlackSquare() {
-    var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
-    _classCallCheck(this, BlackSquare);
-    _defineProperty(this, "sideLength", void 0);
+var SimpleSquare = /*#__PURE__*/function () {
+  function SimpleSquare(options) {
+    _classCallCheck(this, SimpleSquare);
+    _defineProperty(this, "defaultOptions", void 0);
+    _defineProperty(this, "options", void 0);
     _defineProperty(this, "rectangleObject", void 0);
-    this.sideLength = length;
+    this.defaultOptions = {
+      sideLength: 100,
+      color: 0xFFFFFF
+    };
+    this.options = _objectSpread(_objectSpread({}, this.defaultOptions), {}, {
+      options: options
+    });
     this.rectangleObject = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Graphics();
-    this.rectangleObject.beginFill(0xFFFFFF);
-    this.rectangleObject.drawRect(0, 0, this.sideLength, this.sideLength);
+    this.rectangleObject.beginFill(this.options.color);
+    this.rectangleObject.drawRect(0, 0, this.options.sideLength, this.options.sideLength);
   }
-  _createClass(BlackSquare, [{
+  _createClass(SimpleSquare, [{
     key: "container",
     get: function get() {
       return this.rectangleObject;
     }
+  }, {
+    key: "getTickFunction",
+    value: function getTickFunction() {
+      return null;
+    }
   }], [{
     key: "test",
     value: function test() {
-      return new BlackSquare();
+      return new SimpleSquare();
     }
   }]);
-  return BlackSquare;
+  return SimpleSquare;
 }();
 
 
@@ -894,6 +907,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/index.mjs");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -902,14 +920,23 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _ty
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 var ColorSplit1 = /*#__PURE__*/function () {
-  function ColorSplit1(texture) {
-    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  function ColorSplit1(texture, options) {
     _classCallCheck(this, ColorSplit1);
+    _defineProperty(this, "default_options", void 0);
+    _defineProperty(this, "options", void 0);
     _defineProperty(this, "texture", void 0);
     _defineProperty(this, "container", void 0);
-    _defineProperty(this, "width", void 0);
-    _defineProperty(this, "height", void 0);
+    this.default_options = {
+      width: null,
+      height: null,
+      position_speed: 0.05,
+      blur_speed: 0.09,
+      disrupt_on_click: true,
+      blur_filter_amount: 30,
+      displacement_x: 40,
+      displacement_y: 50
+    };
+    this.options = _objectSpread(_objectSpread({}, this.default_options), options);
     this.texture = texture;
     this.container = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Container();
     var red = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite(texture);
@@ -924,58 +951,77 @@ var ColorSplit1 = /*#__PURE__*/function () {
     this.container.addChild(red);
     this.container.addChild(green);
     this.container.addChild(blue);
-    this.addClickDisruptor();
-    this.addNormalizer();
+    if (this.options.disrupt_on_click) {
+      this.addClickDisruptor();
+    }
   }
   _createClass(ColorSplit1, [{
     key: "configureSprite",
     value: function configureSprite(sprite) {
       sprite.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__.BLEND_MODES.ADD;
-      sprite.blurFilter = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.BlurFilter();
-      sprite.filters = [sprite.blurFilter];
-      sprite.blurFilter.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__.BLEND_MODES.ADD;
-      sprite.blurFilterAmount = 30;
-      sprite.blurFilter.blur = .000001;
+      if (this.options.width) {
+        sprite.width = this.options.width;
+      }
+      if (this.options.height) {
+        sprite.height = this.options.height;
+      }
+      sprite.blur_filter = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.BlurFilter();
+      sprite.filters = [sprite.blur_filter];
+      sprite.blur_filter.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__.BLEND_MODES.ADD;
+      sprite.blur_filter_amount = this.options.blur_filter_amount;
+      sprite.blur_filter.blur = .000001;
     }
   }, {
     key: "addClickDisruptor",
     value: function addClickDisruptor() {
+      var _this = this;
       if (this.disruptors_added) {
         return false;
       }
       this.container.interactive = true;
-      this.container.on('mousedown', this.clicked);
+      this.container.on('mousedown', function () {
+        _this.disrupt();
+      });
       this.disruptors_added = true;
     }
   }, {
-    key: "clicked",
-    value: function clicked() {
-      var children = this.children;
-      children.forEach(function (channel) {
-        channel.pos_x = Math.round(Math.random() * 30) - 15;
-        channel.pos_y = Math.round(Math.random() * 50) - 25;
-        channel.x = channel.pos_x;
-        channel.y = channel.pos_y;
-        channel.blurFilter.blur = channel.blurFilterAmount;
-        channel.alpha = 0;
-      });
+    key: "disrupt",
+    value: function disrupt() {
+      var children = this.container.children;
+      var _iterator = _createForOfIteratorHelper(children),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var channel = _step.value;
+          channel.pos_x = Math.round(Math.random() * this.options.displacement_x) - this.options.displacement_x / 2;
+          channel.pos_y = Math.round(Math.random() * this.options.displacement_y) - this.options.displacement_y / 2;
+          channel.x = channel.pos_x;
+          channel.y = channel.pos_y;
+          channel.blur_filter.blur = channel.blur_filter_amount;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
     }
   }, {
-    key: "addNormalizer",
-    value: function addNormalizer() {
-      var _this = this;
-      app.ticker.add(function () {
-        var children = _this.container.children;
-        var speed_pos = 0.05;
-        var speed_blur = 0.09;
+    key: "getTickFunction",
+    value: function getTickFunction() {
+      var _this2 = this;
+      var tick_function = function tick_function() {
+        var children = _this2.container.children;
+        var speed_pos = _this2.options.position_speed;
+        var speed_blur = _this2.options.blur_speed;
         children.forEach(function (channel) {
           channel.x += (0 - channel.x) * speed_pos;
           channel.y += (0 - channel.y) * speed_pos;
-          var blur = channel.blurFilter;
-          blur.blur += (0 - channel.blurFilter.blur) * speed_blur;
+          var blur = channel.blur_filter;
+          blur.blur += (0 - channel.blur_filter.blur) * speed_blur;
           channel.alpha += (1 - channel.alpha) * speed_blur;
         });
-      });
+      };
+      return tick_function;
     }
   }, {
     key: "container",
@@ -986,7 +1032,10 @@ var ColorSplit1 = /*#__PURE__*/function () {
     key: "test",
     value: function test() {
       var texture = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Texture.from('https://upload.wikimedia.org/wikipedia/commons/b/b9/Diatomeas-Haeckel.jpg');
-      return new ColorSplit1(texture);
+      return new ColorSplit1(texture, {
+        width: 200,
+        height: 133
+      });
     }
   }]);
   return ColorSplit1;
@@ -34478,14 +34527,14 @@ var __webpack_exports__ = {};
   \********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/index.mjs");
-/* harmony import */ var _sima_black_square_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sima/black-square.js */ "./src/sima/black-square.js");
+/* harmony import */ var _nodep_simple_square_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./nodep/simple-square.js */ "./src/nodep/simple-square.js");
 /* harmony import */ var _sima_color_split1_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sima/color-split1.js */ "./src/sima/color-split1.js");
 
 var TWEEN = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
 
 
 var classes = {
-  BlackSquare: _sima_black_square_js__WEBPACK_IMPORTED_MODULE_1__.BlackSquare,
+  SimpleSquare: _nodep_simple_square_js__WEBPACK_IMPORTED_MODULE_1__.SimpleSquare,
   ColorSplit1: _sima_color_split1_js__WEBPACK_IMPORTED_MODULE_2__.ColorSplit1
 };
 var appContainer = document.getElementsByClassName('demo')[0];
@@ -34539,10 +34588,12 @@ function loadDemo(name) {
   }
 
   var DemoClass = classes[name];
-  console.log(DemoClass);
   app.currentDemo = DemoClass.test();
   var demoContainer = app.currentDemo.container;
   app.stage.addChild(demoContainer);
+
+  // Add the demo ticker() function to the ticker
+  app.ticker.add(app.currentDemo.getTickFunction());
 
   // Center the new member of the family
   var demoBounds = demoContainer.getBounds();

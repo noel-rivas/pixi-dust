@@ -1,12 +1,26 @@
 import * as PIXI from 'pixi.js';
 
 class ColorSplit1 {
+  default_options;
+  options;
+
   texture;
   container;
-  width;
-  height;
 
-  constructor(texture, width=null, height=null) {
+  constructor(texture, options) {
+    this.default_options = {
+      width: null,
+      height: null,
+      position_speed: 0.05,
+      blur_speed: 0.09,
+      disrupt_on_click: true,
+      blur_filter_amount: 30,
+      displacement_x: 40,
+      displacement_y: 50,
+    }
+
+    this.options = {...this.default_options, ...options};
+
     this.texture = texture;
 
     this.container = new PIXI.Container();
@@ -27,18 +41,27 @@ class ColorSplit1 {
     this.container.addChild(green);
     this.container.addChild(blue);
 
-    this.addClickDisruptor();
-    this.addNormalizer();
+    if(this.options.disrupt_on_click) {
+      this.addClickDisruptor();
+    }
   }
 
   configureSprite(sprite) {
     sprite.blendMode = PIXI.BLEND_MODES.ADD;
 
-    sprite.blurFilter = new PIXI.BlurFilter()
-    sprite.filters = [sprite.blurFilter]
-    sprite.blurFilter.blendMode = PIXI.BLEND_MODES.ADD
-    sprite.blurFilterAmount = 30
-    sprite.blurFilter.blur = .000001
+    if(this.options.width) {
+      sprite.width = this.options.width;
+    }
+
+    if(this.options.height) {
+      sprite.height = this.options.height;
+    }
+
+    sprite.blur_filter = new PIXI.BlurFilter()
+    sprite.filters = [sprite.blur_filter]
+    sprite.blur_filter.blendMode = PIXI.BLEND_MODES.ADD
+    sprite.blur_filter_amount = this.options.blur_filter_amount;
+    sprite.blur_filter.blur = .000001
   }
 
   addClickDisruptor() {
@@ -47,43 +70,44 @@ class ColorSplit1 {
     }
     
     this.container.interactive = true;
-    this.container.on('mousedown', this.clicked);
+    this.container.on('mousedown', () => {this.disrupt();});
 
     this.disruptors_added = true;
   }
 
-  clicked() {
-    let children = this.children;
 
-    children.forEach(channel => {
-      channel.pos_x = Math.round(Math.random() * 30) - 15;
-      channel.pos_y = Math.round(Math.random() * 50) - 25
+  disrupt() {
+    let children = this.container.children;
+
+    for(const channel of children) {
+      channel.pos_x = Math.round(Math.random() * this.options.displacement_x) - (this.options.displacement_x / 2);
+      channel.pos_y = Math.round(Math.random() * this.options.displacement_y) - (this.options.displacement_y / 2);
 
       channel.x = channel.pos_x
       channel.y = channel.pos_y
 
-      channel.blurFilter.blur = channel.blurFilterAmount
-
-      channel.alpha = 0
-    })
+      channel.blur_filter.blur = channel.blur_filter_amount
+    }
   }
 
-  addNormalizer() {
-    app.ticker.add(() => {
+  getTickFunction() {
+    const tick_function = () => {
       let children = this.container.children;
-      let speed_pos = 0.05
-      let speed_blur = 0.09
+      let speed_pos = this.options.position_speed;
+      let speed_blur = this.options.blur_speed;
 
       children.forEach(channel => {
         channel.x += (0 - channel.x) * speed_pos;
         channel.y += (0 - channel.y) * speed_pos;
 
-        let blur = channel.blurFilter
-        blur.blur += (0 - channel.blurFilter.blur) * speed_blur
+        let blur = channel.blur_filter
+        blur.blur += (0 - channel.blur_filter.blur) * speed_blur
 
         channel.alpha += (1 - channel.alpha) * speed_blur
       });
-    });
+    };
+
+    return tick_function;
   }
 
   get container() {
@@ -92,7 +116,10 @@ class ColorSplit1 {
 
   static test() {
     const texture = PIXI.Texture.from('https://upload.wikimedia.org/wikipedia/commons/b/b9/Diatomeas-Haeckel.jpg');
-    return new ColorSplit1(texture);
+    return new ColorSplit1(texture, {
+      width: 200,
+      height: 133
+    });
   }
 }
 
