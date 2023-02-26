@@ -1,39 +1,46 @@
 import * as PIXI from 'pixi.js';
 
+/**
+ * Takes a texture and splits it in RGB channels that can be manipulated
+ * separately. Includes a "disrupt" effect to move and blur the channels.
+ */
 class ColorSplit1 {
-  default_options;
+  defaultOptions;
   options;
 
   texture;
   container;
 
   constructor(texture, options) {
-    this.default_options = {
-      width: null,
+    this.defaultOptions = {
+      width: null,      // the size of the object will be that of the texture, once it loads
       height: null,
-      position_speed: 0.05,
-      blur_speed: 0.09,
-      disrupt_on_click: true,
-      blur_filter_amount: 30,
-      displacement_x: 40,
-      displacement_y: 50,
+      positionSpeed: 0.05,
+      blurSpeed: 0.09,
+      disruptOnClick: true,
+      blurFilterAmount: 30,
+      displacementX: 40,
+      displacementY: 50,
     }
 
-    this.options = {...this.default_options, ...options};
+    this.options = {...this.defaultOptions, ...options};
 
     this.texture = texture;
 
     this.container = new PIXI.Container();
 
     const red = new PIXI.Sprite(texture);
+    red.name = 'red';
     red.tint = 0xFF2288;
     this.configureSprite(red);
     
     const green = new PIXI.Sprite(texture);
+    green.name = 'green';
     green.tint = 0x00DD00;
     this.configureSprite(green);
 
     const blue = new PIXI.Sprite(texture);
+    blue.name = 'blue';
     blue.tint = 0x000088;
     this.configureSprite(blue);
 
@@ -41,7 +48,7 @@ class ColorSplit1 {
     this.container.addChild(green);
     this.container.addChild(blue);
 
-    if(this.options.disrupt_on_click) {
+    if(this.options.disruptOnClick) {
       this.addClickDisruptor();
     }
   }
@@ -57,22 +64,22 @@ class ColorSplit1 {
       sprite.height = this.options.height;
     }
 
-    sprite.blur_filter = new PIXI.BlurFilter()
-    sprite.filters = [sprite.blur_filter]
-    sprite.blur_filter.blendMode = PIXI.BLEND_MODES.ADD
-    sprite.blur_filter_amount = this.options.blur_filter_amount;
-    sprite.blur_filter.blur = .000001
+    sprite.blurFilter = new PIXI.BlurFilter()
+    sprite.filters = [sprite.blurFilter]
+    sprite.blurFilter.blendMode = PIXI.BLEND_MODES.ADD
+    sprite.blurFilterAmount = this.options.blurFilterAmount;
+    sprite.blurFilter.blur = .000001
   }
 
   addClickDisruptor() {
-    if(this.disruptors_added) {
+    if(this.disruptorsAdded) {
       return false;
     }
     
     this.container.interactive = true;
     this.container.on('mousedown', () => {this.disrupt();});
 
-    this.disruptors_added = true;
+    this.disruptorsAdded = true;
   }
 
 
@@ -80,34 +87,28 @@ class ColorSplit1 {
     let children = this.container.children;
 
     for(const channel of children) {
-      channel.pos_x = Math.round(Math.random() * this.options.displacement_x) - (this.options.displacement_x / 2);
-      channel.pos_y = Math.round(Math.random() * this.options.displacement_y) - (this.options.displacement_y / 2);
+      channel.posX = Math.round(Math.random() * this.options.displacementX) - (this.options.displacementX / 2);
+      channel.posY = Math.round(Math.random() * this.options.displacementY) - (this.options.displacementY / 2);
 
-      channel.x = channel.pos_x
-      channel.y = channel.pos_y
+      channel.x = channel.posX
+      channel.y = channel.posY
 
-      channel.blur_filter.blur = channel.blur_filter_amount
+      channel.blurFilter.blur = channel.blurFilterAmount
     }
   }
 
   getTickFunction() {
-    const tick_function = () => {
-      let children = this.container.children;
-      let speed_pos = this.options.position_speed;
-      let speed_blur = this.options.blur_speed;
+    const tickFunction = () => {
+      this.container.children.forEach(channel => {
+        channel.x += (0 - channel.x) * this.options.positionSpeed;
+        channel.y += (0 - channel.y) * this.options.blurSpeed;
 
-      children.forEach(channel => {
-        channel.x += (0 - channel.x) * speed_pos;
-        channel.y += (0 - channel.y) * speed_pos;
-
-        let blur = channel.blur_filter
-        blur.blur += (0 - channel.blur_filter.blur) * speed_blur
-
-        channel.alpha += (1 - channel.alpha) * speed_blur
+        let blur = channel.blurFilter
+        blur.blur += (0 - channel.blurFilter.blur) * this.options.blurSpeed
       });
     };
 
-    return tick_function;
+    return tickFunction;
   }
 
   get container() {

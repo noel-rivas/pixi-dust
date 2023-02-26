@@ -919,39 +919,48 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
+
+/**
+ * Takes a texture and splits it in RGB channels that can be manipulated
+ * separately. Includes a "disrupt" effect to move and blur the channels.
+ */
 var ColorSplit1 = /*#__PURE__*/function () {
   function ColorSplit1(texture, options) {
     _classCallCheck(this, ColorSplit1);
-    _defineProperty(this, "default_options", void 0);
+    _defineProperty(this, "defaultOptions", void 0);
     _defineProperty(this, "options", void 0);
     _defineProperty(this, "texture", void 0);
     _defineProperty(this, "container", void 0);
-    this.default_options = {
+    this.defaultOptions = {
       width: null,
+      // the size of the object will be that of the texture, once it loads
       height: null,
-      position_speed: 0.05,
-      blur_speed: 0.09,
-      disrupt_on_click: true,
-      blur_filter_amount: 30,
-      displacement_x: 40,
-      displacement_y: 50
+      positionSpeed: 0.05,
+      blurSpeed: 0.09,
+      disruptOnClick: true,
+      blurFilterAmount: 30,
+      displacementX: 40,
+      displacementY: 50
     };
-    this.options = _objectSpread(_objectSpread({}, this.default_options), options);
+    this.options = _objectSpread(_objectSpread({}, this.defaultOptions), options);
     this.texture = texture;
     this.container = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Container();
     var red = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite(texture);
+    red.name = 'red';
     red.tint = 0xFF2288;
     this.configureSprite(red);
     var green = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite(texture);
+    green.name = 'green';
     green.tint = 0x00DD00;
     this.configureSprite(green);
     var blue = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite(texture);
+    blue.name = 'blue';
     blue.tint = 0x000088;
     this.configureSprite(blue);
     this.container.addChild(red);
     this.container.addChild(green);
     this.container.addChild(blue);
-    if (this.options.disrupt_on_click) {
+    if (this.options.disruptOnClick) {
       this.addClickDisruptor();
     }
   }
@@ -965,24 +974,24 @@ var ColorSplit1 = /*#__PURE__*/function () {
       if (this.options.height) {
         sprite.height = this.options.height;
       }
-      sprite.blur_filter = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.BlurFilter();
-      sprite.filters = [sprite.blur_filter];
-      sprite.blur_filter.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__.BLEND_MODES.ADD;
-      sprite.blur_filter_amount = this.options.blur_filter_amount;
-      sprite.blur_filter.blur = .000001;
+      sprite.blurFilter = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.BlurFilter();
+      sprite.filters = [sprite.blurFilter];
+      sprite.blurFilter.blendMode = pixi_js__WEBPACK_IMPORTED_MODULE_0__.BLEND_MODES.ADD;
+      sprite.blurFilterAmount = this.options.blurFilterAmount;
+      sprite.blurFilter.blur = .000001;
     }
   }, {
     key: "addClickDisruptor",
     value: function addClickDisruptor() {
       var _this = this;
-      if (this.disruptors_added) {
+      if (this.disruptorsAdded) {
         return false;
       }
       this.container.interactive = true;
       this.container.on('mousedown', function () {
         _this.disrupt();
       });
-      this.disruptors_added = true;
+      this.disruptorsAdded = true;
     }
   }, {
     key: "disrupt",
@@ -993,11 +1002,11 @@ var ColorSplit1 = /*#__PURE__*/function () {
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var channel = _step.value;
-          channel.pos_x = Math.round(Math.random() * this.options.displacement_x) - this.options.displacement_x / 2;
-          channel.pos_y = Math.round(Math.random() * this.options.displacement_y) - this.options.displacement_y / 2;
-          channel.x = channel.pos_x;
-          channel.y = channel.pos_y;
-          channel.blur_filter.blur = channel.blur_filter_amount;
+          channel.posX = Math.round(Math.random() * this.options.displacementX) - this.options.displacementX / 2;
+          channel.posY = Math.round(Math.random() * this.options.displacementY) - this.options.displacementY / 2;
+          channel.x = channel.posX;
+          channel.y = channel.posY;
+          channel.blurFilter.blur = channel.blurFilterAmount;
         }
       } catch (err) {
         _iterator.e(err);
@@ -1009,19 +1018,15 @@ var ColorSplit1 = /*#__PURE__*/function () {
     key: "getTickFunction",
     value: function getTickFunction() {
       var _this2 = this;
-      var tick_function = function tick_function() {
-        var children = _this2.container.children;
-        var speed_pos = _this2.options.position_speed;
-        var speed_blur = _this2.options.blur_speed;
-        children.forEach(function (channel) {
-          channel.x += (0 - channel.x) * speed_pos;
-          channel.y += (0 - channel.y) * speed_pos;
-          var blur = channel.blur_filter;
-          blur.blur += (0 - channel.blur_filter.blur) * speed_blur;
-          channel.alpha += (1 - channel.alpha) * speed_blur;
+      var tickFunction = function tickFunction() {
+        _this2.container.children.forEach(function (channel) {
+          channel.x += (0 - channel.x) * _this2.options.positionSpeed;
+          channel.y += (0 - channel.y) * _this2.options.blurSpeed;
+          var blur = channel.blurFilter;
+          blur.blur += (0 - channel.blurFilter.blur) * _this2.options.blurSpeed;
         });
       };
-      return tick_function;
+      return tickFunction;
     }
   }, {
     key: "container",
